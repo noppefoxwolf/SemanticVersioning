@@ -36,24 +36,23 @@ public struct PreRelease {
 
 extension SemanticVersion: Comparable {
     public static func < (lhs: SemanticVersion, rhs: SemanticVersion) -> Bool {
-        if lhs.major < rhs.major { // 1.0.0 < 2.0.0.
-            return true
+        if lhs.major != rhs.major {
+            return lhs.major < rhs.major // 1.0.0 < 2.0.0
         }
-        if lhs.major == rhs.major {
-            if lhs.preRelease != nil && rhs.preRelease == nil {
-                return true
-            }
-            if let lhsPreRelease = lhs.preRelease, let rhsPreRelease = rhs.preRelease {
-                return lhsPreRelease < rhsPreRelease
-            }
+        if lhs.minor != rhs.minor {
+            return lhs.minor < rhs.minor // 1.1.0 < 1.2.0
         }
-        if lhs.minor < rhs.minor { // 1.1.0 < 1.2.0
-            return true
+        if lhs.patch != rhs.patch {
+            return lhs.patch < rhs.patch // 1.0.0 < 1.0.1
         }
-        if lhs.patch < rhs.patch { // 1.0.0 < 1.0.1
-            return true
+        switch (lhs.preRelease, rhs.preRelease) {
+        case (nil, _):
+            return false // 1.0.0 > 1.0.0-alpha
+        case (_?, nil):
+            return true // 1.0.0-alpha < 1.0.0
+        case (let lhsPreRelease?, let rhsPreRelease?):
+            return lhsPreRelease < rhsPreRelease // 1.0.0-alpha < 1.0.0-alpha.1
         }
-        return false
     }
 }
 
