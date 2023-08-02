@@ -24,10 +24,10 @@ class SemanticVersionTests: XCTestCase {
     }
     
     func testOrder() async throws {
-        //  1.0.0 < 2.0.0 < 2.1.0 < 2.1.1
-        let v100 = SemanticVersion(
+        //  1.2.0 < 2.0.0 < 2.0.1 < 2.1.0
+        let v120 = SemanticVersion(
             major: 1,
-            minor: 0,
+            minor: 2,
             patch: 0
         )
         let v200 = SemanticVersion(
@@ -35,26 +35,36 @@ class SemanticVersionTests: XCTestCase {
             minor: 0,
             patch: 0
         )
+        let v201 = SemanticVersion(
+            major: 2,
+            minor: 0,
+            patch: 1
+        )
         let v210 = SemanticVersion(
             major: 2,
             minor: 1,
             patch: 0
         )
-        let v211 = SemanticVersion(
-            major: 2,
-            minor: 1,
-            patch: 1
-        )
 
-        XCTAssertGreaterThan(v211, v210)
-        XCTAssertGreaterThan(v210, v200)
-        XCTAssertGreaterThan(v200, v100)
+        XCTAssertGreaterThan(v210, v201)
+        XCTAssertGreaterThan(v201, v200)
+        XCTAssertGreaterThan(v200, v120)
+        XCTAssertFalse(v210 < v201)
+        XCTAssertFalse(v201 < v200)
+        XCTAssertFalse(v200 < v120)
     }
     
     func testPreReleasedOrder() async throws {
+        // 1.0.0-alpha < 1.0.0 < 1.0.1-alpha
         let v100Alpha = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "alpha")
         let v100 = SemanticVersion(major: 1, minor: 0, patch: 0)
+        let v101Alpha = SemanticVersion(major: 1, minor: 0, patch: 1, preRelease: "alpha")
         XCTAssertGreaterThan(v100, v100Alpha)
+        XCTAssertGreaterThan(v101Alpha, v100)
+        XCTAssertGreaterThan(v101Alpha, v100Alpha)
+        XCTAssertFalse(v100 < v100Alpha)
+        XCTAssertFalse(v101Alpha < v100)
+        XCTAssertFalse(v101Alpha < v100Alpha)
     }
     
     func testAsciiPreReleasedOrder() async throws {
