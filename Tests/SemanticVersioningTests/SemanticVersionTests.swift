@@ -24,6 +24,34 @@ class SemanticVersionTests: XCTestCase {
     }
     
     func testOrder() async throws {
+        //  1.0.0 < 2.0.0 < 2.1.0 < 2.1.1
+        let v100 = SemanticVersion(
+            major: 1,
+            minor: 0,
+            patch: 0
+        )
+        let v200 = SemanticVersion(
+            major: 2,
+            minor: 0,
+            patch: 0
+        )
+        let v210 = SemanticVersion(
+            major: 2,
+            minor: 1,
+            patch: 0
+        )
+        let v211 = SemanticVersion(
+            major: 2,
+            minor: 1,
+            patch: 1
+        )
+
+        XCTAssertGreaterThan(v211, v210)
+        XCTAssertGreaterThan(v210, v200)
+        XCTAssertGreaterThan(v200, v100)
+    }
+    
+    func testWrongOrder() async throws {
         //  1.2.0 < 2.0.0 < 2.0.1 < 2.1.0
         let v120 = SemanticVersion(
             major: 1,
@@ -45,10 +73,7 @@ class SemanticVersionTests: XCTestCase {
             minor: 1,
             patch: 0
         )
-
-        XCTAssertGreaterThan(v210, v201)
-        XCTAssertGreaterThan(v201, v200)
-        XCTAssertGreaterThan(v200, v120)
+        
         XCTAssertFalse(v210 < v201)
         XCTAssertFalse(v201 < v200)
         XCTAssertFalse(v200 < v120)
