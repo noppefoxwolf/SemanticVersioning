@@ -74,9 +74,15 @@ class SemanticVersionTests: XCTestCase {
             patch: 0
         )
         
-        XCTAssertFalse(v210 < v201)
-        XCTAssertFalse(v201 < v200)
-        XCTAssertFalse(v200 < v120)
+        XCTExpectFailure {
+            XCTAssertLessThan(v210, v201)
+        }
+        XCTExpectFailure {
+            XCTAssertLessThan(v201, v200)
+        }
+        XCTExpectFailure {
+            XCTAssertLessThan(v200, v120)
+        }
     }
     
     func testPreReleasedOrder() async throws {
@@ -87,9 +93,16 @@ class SemanticVersionTests: XCTestCase {
         XCTAssertGreaterThan(v100, v100Alpha)
         XCTAssertGreaterThan(v101Alpha, v100)
         XCTAssertGreaterThan(v101Alpha, v100Alpha)
-        XCTAssertFalse(v100 < v100Alpha)
-        XCTAssertFalse(v101Alpha < v100)
-        XCTAssertFalse(v101Alpha < v100Alpha)
+        
+        XCTExpectFailure {
+            XCTAssertLessThan(v100, v100Alpha)
+        }
+        XCTExpectFailure {
+            XCTAssertLessThan(v101Alpha, v100)
+        }
+        XCTExpectFailure {
+            XCTAssertLessThan(v101Alpha, v100Alpha)
+        }
     }
     
     func testAsciiPreReleasedOrder() async throws {
