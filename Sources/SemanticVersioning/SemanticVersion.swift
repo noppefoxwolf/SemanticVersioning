@@ -88,3 +88,7 @@ extension PreRelease: Comparable {
         return false
     }
 }
+
+public extension SemanticVersion {
+    static var zero: SemanticVersion { .init(major: 0, minor: 0, patch: 0) }
+}
