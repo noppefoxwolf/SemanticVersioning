@@ -20,7 +20,8 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "SemanticVersioning"
+            name: "SemanticVersioning",
+            resources: [.copy("Resources/PrivacyInfo.xcprivacy")]
         ),
         .testTarget(
             name: "SemanticVersioningTests",
