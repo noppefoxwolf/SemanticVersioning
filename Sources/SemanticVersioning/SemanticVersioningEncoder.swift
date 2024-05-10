@@ -1,6 +1,4 @@
-import Foundation
-
-public struct SemanticVersioningEncoder {
+public struct SemanticVersioningEncoder: Sendable {
     public init() {}
     
     public func encode(_ semanticVersion: SemanticVersion) -> String {
