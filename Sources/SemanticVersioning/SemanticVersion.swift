@@ -7,13 +7,13 @@ public struct SemanticVersion: Codable, Sendable {
         self.build = build
     }
     
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: any Decoder) throws {
         let container = try decoder.singleValueContainer()
         let versionString = try container.decode(String.self)
         self = try SemanticVersioningDecoder().decode(from: versionString)
     }
     
-    public func encode(to encoder: Encoder) throws {
+    public func encode(to encoder: any Encoder) throws {
         var container = encoder.singleValueContainer()
         let value = SemanticVersioningEncoder().encode(self)
         try container.encode(value)
