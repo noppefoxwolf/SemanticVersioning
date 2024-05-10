@@ -1,5 +1,7 @@
 # SemanticVersioning
 
+![GitHub Actions](https://github.com/noppefoxwolf/SemanticVersioning/actions/workflows/swift.yml/badge.svg)
+
 ## Codable
 
 ```swift
