@@ -1,7 +1,7 @@
 import RegexBuilder
 
 // https://semver.org
-public struct SemanticVersioningDecoder {
+public struct SemanticVersioningDecoder: Sendable {
     public init() {}
     public func decode(from string: String) throws -> SemanticVersion {
         let majorReference = Reference<Int>()

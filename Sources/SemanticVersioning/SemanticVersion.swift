@@ -1,4 +1,4 @@
-public struct SemanticVersion: Codable {
+public struct SemanticVersion: Codable, Sendable {
     public init(major: Int, minor: Int, patch: Int, preRelease: String? = nil, build: String? = nil) {
         self.major = major
         self.minor = minor
@@ -26,7 +26,7 @@ public struct SemanticVersion: Codable {
     public var build: String?
 }
 
-public struct PreRelease {
+public struct PreRelease: Sendable {
     public init(identifier: String) {
         self.identifiers = identifier.split(separator: ".")
     }
