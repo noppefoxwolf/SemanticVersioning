@@ -1,7 +1,11 @@
-import XCTest
+import Testing
+import Foundation
 @testable import SemanticVersioning
 
-class SemanticVersionTests: XCTestCase {
+@Suite
+struct SemanticVersionTests {
+    
+    @Test
     func testCodable() async throws {
         let json = ##"{"semanticVersion":"1.2.0-alpha.11+feddcc"}"##
         struct Version: Codable {
@@ -9,20 +13,22 @@ class SemanticVersionTests: XCTestCase {
         }
         let jsonDecoder = JSONDecoder()
         let decoded = try jsonDecoder.decode(Version.self, from: Data(json.utf8))
-        XCTAssertEqual(decoded.semanticVersion.major, 1)
+        #expect(decoded.semanticVersion.major == 1)
         
         let jsonEncoder = JSONEncoder()
         let encoded = try jsonEncoder.encode(decoded)
         let encodedJSON = String(data: encoded, encoding: .utf8)!
-        XCTAssertEqual(encodedJSON, json)
+        #expect(encodedJSON == json)
     }
     
+    @Test
     func testEqual() async throws {
         let v100_A = SemanticVersion(major: 1, minor: 0, patch: 0)
         let v100_B = SemanticVersion(major: 1, minor: 0, patch: 0)
-        XCTAssertEqual(v100_A, v100_B)
+        #expect(v100_A == v100_B)
     }
     
+    @Test
     func testOrder() async throws {
         //  1.0.0 < 2.0.0 < 2.1.0 < 2.1.1
         let v100 = SemanticVersion(
@@ -46,11 +52,12 @@ class SemanticVersionTests: XCTestCase {
             patch: 1
         )
 
-        XCTAssertGreaterThan(v211, v210)
-        XCTAssertGreaterThan(v210, v200)
-        XCTAssertGreaterThan(v200, v100)
+        #expect(!(v211 < v210))
+        #expect(!(v210 < v200))
+        #expect(!(v200 < v100))
     }
     
+    @Test
     func testWrongOrder() async throws {
         //  1.2.0 < 2.0.0 < 2.0.1 < 2.1.0
         let v120 = SemanticVersion(
@@ -74,37 +81,27 @@ class SemanticVersionTests: XCTestCase {
             patch: 0
         )
         
-        XCTExpectFailure {
-            XCTAssertLessThan(v210, v201)
-        }
-        XCTExpectFailure {
-            XCTAssertLessThan(v201, v200)
-        }
-        XCTExpectFailure {
-            XCTAssertLessThan(v200, v120)
-        }
+        #expect(!(v210 < v201))
+        #expect(!(v201 < v200))
+        #expect(!(v200 < v120))
     }
     
+    @Test
     func testPreReleasedOrder() async throws {
         // 1.0.0-alpha < 1.0.0 < 1.0.1-alpha
         let v100Alpha = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "alpha")
         let v100 = SemanticVersion(major: 1, minor: 0, patch: 0)
         let v101Alpha = SemanticVersion(major: 1, minor: 0, patch: 1, preRelease: "alpha")
-        XCTAssertGreaterThan(v100, v100Alpha)
-        XCTAssertGreaterThan(v101Alpha, v100)
-        XCTAssertGreaterThan(v101Alpha, v100Alpha)
+        #expect(v100 > v100Alpha)
+        #expect(v101Alpha > v100)
+        #expect(v101Alpha > v100Alpha)
         
-        XCTExpectFailure {
-            XCTAssertLessThan(v100, v100Alpha)
-        }
-        XCTExpectFailure {
-            XCTAssertLessThan(v101Alpha, v100)
-        }
-        XCTExpectFailure {
-            XCTAssertLessThan(v101Alpha, v100Alpha)
-        }
+        #expect(!(v100 < v100Alpha))
+        #expect(!(v101Alpha < v100))
+        #expect(!(v101Alpha < v100Alpha))
     }
     
+    @Test
     func testAsciiPreReleasedOrder() async throws {
         let v100Alpha = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "alpha")
         let v100Alpha1 = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "alpha.1")
@@ -114,13 +111,13 @@ class SemanticVersionTests: XCTestCase {
         let v100Beta11 = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "beta.11")
         let v100RC1 = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: "rc.1")
         let v100 = SemanticVersion(major: 1, minor: 0, patch: 0, preRelease: nil)
-        XCTAssertGreaterThan(v100, v100RC1)
-        XCTAssertGreaterThan(v100RC1, v100Beta11)
-        XCTAssertGreaterThan(v100Beta11, v100Beta2)
-        XCTAssertGreaterThan(v100Beta2, v100Beta)
-        XCTAssertGreaterThan(v100Beta, v100AlphaBeta)
-        XCTAssertGreaterThan(v100AlphaBeta, v100Alpha1)
-        XCTAssertGreaterThan(v100Alpha1, v100Alpha)
+        #expect(v100 > v100RC1)
+        #expect(v100RC1 > v100Beta11)
+        #expect(v100Beta11 > v100Beta2)
+        #expect(v100Beta2 > v100Beta)
+        #expect(v100Beta > v100AlphaBeta)
+        #expect(v100AlphaBeta > v100Alpha1)
+        #expect(v100Alpha1 > v100Alpha)
     }
 }
 
