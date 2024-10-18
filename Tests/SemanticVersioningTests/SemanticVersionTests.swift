@@ -119,5 +119,14 @@ struct SemanticVersionTests {
         #expect(v100AlphaBeta > v100Alpha1)
         #expect(v100Alpha1 > v100Alpha)
     }
+    
+    @Test
+    func testInvalidVersion() async throws {
+        let invalidVersion = "1.0.0.0"
+        let decoder = SemanticVersioningDecoder()
+        #expect(throws: (any Error).self, performing: {
+            try decoder.decode(from: invalidVersion)
+        })
+    }
 }
 
